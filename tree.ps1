@@ -15,7 +15,8 @@ $SuppressFolderContent = @(
 # Files whose CONTENTS should be suppressed (filename still shown)
 $SuppressFileContent = @(
   'package-lock.json',
-  'tree.ps1'
+  'tree.ps1',
+  'favicon.ico'
 )
 
 # Prevent infinite recursion via symlinks/junctions and also avoid duplicating work
