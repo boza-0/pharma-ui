@@ -1,34 +1,32 @@
-# TREE SNAPSHOT (tolerant)
+# TREE SNAPSHOT (positive selection, tolerant)
 # - All folders and files listed when accessible
-# - File contents shown unless explicitly suppressed
-# - File contents may be suppressed by exact filename or by file extension
-# - Suppressed folders do not expand
+# - File contents shown only when explicitly selected
+# - Folder contents shown only when explicitly selected (recursive)
+# - Selection may occur by exact folder name, exact file name, or file extension
+# - Non-selected folders are listed but not expanded
+# - Non-selected files are listed but contents are not shown
 # - Unreadable folders/files are marked, never crash traversal
-# - Reparse points (symlinks/junctions) are shown but not expanded (prevents loops)
+# - Reparse points (symlinks/junctions) are shown but not expanded
+# - Prevents infinite recursion via visited-directory tracking
 
 $root = '.'
 
-# Folders whose CONTENTS should be suppressed (folder name still shown)
-$SuppressFolderContent = @(
-  'node_modules',
-  'deps'
+# Folders whose CONTENTS should be included (recursive)
+$IncludeFolders = @(
+
 )
 
-# Files whose CONTENTS should be suppressed (filename still shown)
-$SuppressFileContent = @(
-  'package-lock.json',
-  'tree.ps1'
+# Files whose CONTENTS should be included
+$IncludeFiles = @(
+  'api.servic'
 )
 
-# File extensions whose CONTENTS should be suppressed (case-insensitive)
-$SuppressFileExtensions = @(
-  '.lock',
-  '.log',
-  '.map',
-  '.ico'
+# File extensions whose CONTENTS should be included (case-insensitive)
+$IncludeFileExtensions = @(
+  '.js'
 )
 
-# Prevent infinite recursion via symlinks/junctions and also avoid duplicating work
+# Track visited directories to prevent loops
 $VisitedDirs = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::OrdinalIgnoreCase)
 
 function Get-SafeLineCount {
@@ -48,7 +46,8 @@ function Get-SafeLineCount {
 function Show-Tree {
   param(
     [string]$path,
-    [string]$indent = ''
+    [string]$indent = '',
+    [bool]$InsideIncludedFolder = $false
   )
 
   $fullPath = $null
@@ -56,7 +55,6 @@ function Show-Tree {
     $fullPath = (Resolve-Path -LiteralPath $path -ErrorAction Stop).Path
   }
   catch {
-    # If we can't resolve it, still attempt listing by raw path below.
     $fullPath = $path
   }
 
@@ -82,36 +80,33 @@ function Show-Tree {
       if ($_.PSIsContainer) {
         Write-Output ("{0}{1}/" -f $indent, $_.Name)
 
-        # Don’t expand symlinks/junctions/reparse points (common source of loops)
         if (($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
           Write-Output ("{0}  | <REPARSE POINT: NOT EXPANDED>" -f $indent)
           return
         }
 
-        if ($SuppressFolderContent -contains $_.Name) {
-          Write-Output ("{0}  | <CONTENT SUPPRESSED: FOLDER>" -f $indent)
+        $isIncludedFolder = $InsideIncludedFolder -or ($IncludeFolders -contains $_.Name)
+
+        if (-not $isIncludedFolder) {
+          Write-Output ("{0}  | <NOT SELECTED: FOLDER>" -f $indent)
           return
         }
 
-        Show-Tree -path $_.FullName -indent ($indent + '  ')
+        Show-Tree -path $_.FullName -indent ($indent + '  ') -InsideIncludedFolder $true
       }
       else {
         $lineCount = Get-SafeLineCount -filePath $_.FullName
         Write-Output ("{0}{1} (lines: {2})" -f $indent, $_.Name, $lineCount)
 
-        # Precedence:
-        # 1) Exact filename suppression
-        # 2) Extension-based suppression
-        # 3) Content display
-
-        if ($SuppressFileContent -contains $_.Name) {
-          Write-Output ("{0}  | <CONTENT SUPPRESSED: FILE>" -f $indent)
-          return
-        }
-
         $extension = [IO.Path]::GetExtension($_.Name)
-        if ($SuppressFileExtensions -contains $extension) {
-          Write-Output ("{0}  | <CONTENT SUPPRESSED: FILE EXTENSION {1}>" -f $indent, $extension)
+
+        $isIncludedFile =
+          $InsideIncludedFolder -or
+          ($IncludeFiles -contains $_.Name) -or
+          ($IncludeFileExtensions -contains $extension)
+
+        if (-not $isIncludedFile) {
+          Write-Output ("{0}  | <NOT SELECTED: FILE>" -f $indent)
           return
         }
 
