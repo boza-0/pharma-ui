@@ -10,14 +10,23 @@ $root = '.'
 
 # Folders whose CONTENTS should be suppressed (folder name still shown)
 $SuppressFolderContent = @(
+  '.angular',
+  '.vscode',
   'node_modules',
-  'deps'
+  'public'
 )
 
 # Files whose CONTENTS should be suppressed (filename still shown)
 $SuppressFileContent = @(
+  '.editorconfig',
+  '.gitignore',
+  'angular.json',
   'package-lock.json',
-  'tree.ps1'
+  'package.json',
+  'readme.md',
+  'tsconfig.app.json',
+  'tsconfig.json',
+  'tsconfig.spec.json'
 )
 
 # File extensions whose CONTENTS should be suppressed (case-insensitive)
@@ -25,7 +34,8 @@ $SuppressFileExtensions = @(
   '.lock',
   '.log',
   '.map',
-  '.ico'
+  '.ico',
+  '.ps1'
 )
 
 # Prevent infinite recursion via symlinks/junctions and also avoid duplicating work
