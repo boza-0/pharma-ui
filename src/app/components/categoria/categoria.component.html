@@ -1,0 +1,13 @@
+<ng-container *ngIf="categoria$ | async as categoria">
+  <h1>{{ categoria.nombre }}</h1>
+
+  <div *ngFor="let sc of categoria.subcategorias">
+    <h2>{{ sc.nombre }}</h2>
+    
+    <ul>
+      <li *ngFor="let f of sc.familias">
+        <a [routerLink]="['/familias', categoria.id, sc.id, f.id]"> {{ f.nombre }} </a>
+      </li>
+    </ul>
+  </div>
+</ng-container>

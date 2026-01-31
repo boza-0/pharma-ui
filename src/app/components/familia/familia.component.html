@@ -1,0 +1,17 @@
+<ng-container *ngIf="familia$ | async as familia">
+  <h1>{{ familia.nombre }}</h1>
+</ng-container>
+
+<ng-container *ngIf="productos$ | async as productos">
+  <ul *ngIf="productos.length > 0; else empty">
+    <li *ngFor="let p of productos">
+      <strong>{{ p.nombre }}</strong><br>
+      {{ p.marca }} — {{ p.pvp }} €<br>
+      Stock: {{ p.stock }}
+    </li>
+  </ul>
+
+  <ng-template #empty>
+    <p>No hay productos en esta familia.</p>
+  </ng-template>
+</ng-container>
