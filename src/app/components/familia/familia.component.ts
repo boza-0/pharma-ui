@@ -14,6 +14,8 @@ import { Observable, switchMap } from 'rxjs';
   //styleUrls: ['./familia.component.css']
 })
 export class FamiliaComponent {
+  viewMode: 'compact' | 'tiles' = 'compact';
+
   familia$: Observable<Familia>;
   productos$: Observable<Producto[]>;
 
