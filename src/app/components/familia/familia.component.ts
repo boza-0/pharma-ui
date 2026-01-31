@@ -10,7 +10,8 @@ import { Observable, switchMap } from 'rxjs';
   selector: 'app-familia',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './familia.component.html'
+  templateUrl: './familia.component.html',
+  //styleUrls: ['./familia.component.css']
 })
 export class FamiliaComponent {
   familia$: Observable<Familia>;

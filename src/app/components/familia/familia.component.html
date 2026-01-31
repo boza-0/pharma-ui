@@ -3,13 +3,45 @@
 </ng-container>
 
 <ng-container *ngIf="productos$ | async as productos">
-  <ul *ngIf="productos.length > 0; else empty">
-    <li *ngFor="let p of productos">
-      <strong>{{ p.nombre }}</strong><br>
-      {{ p.marca }} — {{ p.pvp }} €<br>
-      Stock: {{ p.stock }}
-    </li>
-  </ul>
+  <table *ngIf="productos.length > 0; else empty" class="productos-table">
+    <thead>
+      <tr>
+        <th>categoria_nombre</th>
+        <th>subcategoria_nombre</th>
+        <th>familia_nombre</th>
+        <th>marca</th>
+        <th>nombre</th>
+        <th>concentracion</th>
+        <th>forma_farmaceutica</th>
+        <th>principio_activo</th>
+        <th>sustancia_controlada</th>
+        <th>requiere_serializacion</th>
+        <th>via_administracion_nombre</th>
+        <th>stock</th>
+        <th>pvp</th>
+        <th>sku</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of productos">
+        <td>{{ p.categoria_nombre }}</td>
+        <td>{{ p.subcategoria_nombre }}</td>
+        <td>{{ p.familia_nombre }}</td>
+        <td>{{ p.marca }}</td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.concentracion }}</td>
+        <td>{{ p.forma_farmaceutica }}</td>
+        <td>{{ p.principio_activo }}</td>
+        <td>{{ p.sustancia_controlada ? 'Sí' : 'No' }}</td>
+        <td>{{ p.requiere_serializacion ? 'Sí' : 'No' }}</td>
+        <td>{{ p.via_administracion_nombre }}</td>
+        <td>{{ p.stock }}</td>
+        <td>{{ p.pvp }} €</td>
+        <td>{{ p.sku }}</td>
+      </tr>
+    </tbody>
+  </table>
 
   <ng-template #empty>
     <p>No hay productos en esta familia.</p>

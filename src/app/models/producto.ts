@@ -3,9 +3,16 @@ export interface Producto {
   sku: string;
 
   categoria_id: number;
+  categoria_nombre: string;
+
   subcategoria_id: number;
+  subcategoria_nombre: string;
+
   familia_id: number;
+  familia_nombre: string;
+
   via_administracion_id: number;
+  via_administracion_nombre: string;
 
   marca: string | null;
   nombre: string;
