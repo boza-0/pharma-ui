@@ -10,11 +10,11 @@ import { Observable, switchMap } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink // <-- RouterLink added so [routerLink] works in the template
+    RouterLink
   ],
-  templateUrl: './categoria.component.html'
+  templateUrl: './categoria-detail.component.html'
 })
-export class CategoriaComponent {
+export class CategoriaDetailComponent {
   categoria$: Observable<Categoria>;
 
   constructor(
@@ -23,7 +23,7 @@ export class CategoriaComponent {
   ) {
     this.categoria$ = this.route.paramMap.pipe(
       switchMap(params =>
-        this.api.getCategoria(Number(params.get('id')))
+        this.api.getCategoria(Number(params.get('categoriaId')))
       )
     );
   }

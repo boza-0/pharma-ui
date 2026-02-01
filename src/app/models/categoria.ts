@@ -1,8 +1,4 @@
-export interface Familia {
-  id: number;
-  nombre: string;
-  abbreviation: string;
-}
+import { Familia } from './familia';
 
 export interface Subcategoria {
   id: number;
