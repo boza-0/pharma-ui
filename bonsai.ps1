@@ -11,7 +11,8 @@ $root = '.'
 # Folders whose CONTENTS should be suppressed (folder name still shown)
 $SuppressFolderContent = @(
   'node_modules',
-  'net8.0-windows'
+  'net8.0-windows',
+  'deps'
 )
 
 # Track visited directories to prevent loops

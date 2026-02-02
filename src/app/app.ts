@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { PresenceService } from './services/presence.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,15 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
   template: `<router-outlet></router-outlet>`
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(
+    router: Router,
+    presence: PresenceService
+  ) {
+    router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+        presence.log(e.urlAfterRedirects);
+      });
+  }
+}
